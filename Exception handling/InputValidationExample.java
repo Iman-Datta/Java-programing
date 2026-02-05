@@ -1,7 +1,7 @@
 import java.util.Scanner;
 import java.util.InputMismatchException;
 
-public class Main_01 {
+public class InputValidationExample  {
     static int userInput(Scanner SC){
         int num = 0;
         boolean valid = false;

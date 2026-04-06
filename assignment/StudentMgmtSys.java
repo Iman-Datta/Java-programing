@@ -18,31 +18,82 @@ class Student {
     }
 
     double average() {
-        return marks.stream().mapToDouble(Double::doubleValue).average().orElse(0);
+        if (marks.isEmpty()) {
+            throw new IllegalStateException("No marks available");
+        }
+
+        double sum = 0;
+        for (double m : marks) {
+            sum += m;
+        }
+        return sum / marks.size();
+    }
+
+    void displayMarks() {
+        if (marks.isEmpty()) {
+            throw new IllegalStateException("No marks entered");
+        }
+
+        System.out.println("Marks: " + marks);
     }
 }
 
 public class StudentMgmtSys {
     public static void main(String[] args) {
-        try(Scanner sc = new Scanner(System.in)) {
+        try (Scanner sc = new Scanner(System.in)) {
+
             System.out.print("Enter student name: ");
             String name = sc.nextLine();
 
+            if (name.trim().isEmpty()) {
+                throw new IllegalArgumentException("Name cannot be empty");
+            }
+
             Student s = new Student(name);
 
-            System.out.print("Enter number of subjects: ");
-            int n = sc.nextInt();
+            while (true) {
+                System.out.println("\n--- Student Management System ---");
+                System.out.println("1. Add Mark");
+                System.out.println("2. Display Average");
+                System.out.println("3. Display All Marks");
+                System.out.println("4. Exit");
+                System.out.print("Enter choice: ");
 
-            if (n <= 0) {
-                throw new IllegalArgumentException("Subjects must be greater than 0");
+                try {
+                    int choice = sc.nextInt();
+
+                    switch (choice) {
+                        case 1:
+                            System.out.print("Enter mark: ");
+                            double mark = sc.nextDouble();
+                            s.addMark(mark);
+                            System.out.println("Mark added successfully");
+                            break;
+
+                        case 2:
+                            System.out.println("Average marks: " + s.average());
+                            break;
+
+                        case 3:
+                            s.displayMarks();
+                            break;
+
+                        case 4:
+                            System.out.println("Exiting...");
+                            return;
+
+                        default:
+                            throw new IllegalArgumentException("Invalid menu choice");
+                    }
+
+                } catch (InputMismatchException e) {
+                    System.out.println("Error: Please enter numeric input");
+                    sc.nextLine(); // clear invalid input
+                } catch (Exception e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
             }
 
-            for (int i = 0; i < n; i++) {
-                System.out.print("Enter marks for subject " + (i + 1) + ": ");
-                s.addMark(sc.nextDouble());
-            }
-
-            System.out.println("Average marks: " + s.average());
         } catch (Exception e) {
             System.out.println("Error: " + e.getMessage());
         }

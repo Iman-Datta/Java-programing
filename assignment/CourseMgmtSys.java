@@ -15,6 +15,7 @@ public class CourseMgmtSys {
         }
 
         courses.put(cname, new HashSet<>());
+        System.out.println("Course added successfully");
     }
 
     static void enroll(String cname, String student) {
@@ -29,6 +30,8 @@ public class CourseMgmtSys {
         if (!courses.get(cname).add(student)) {
             throw new IllegalArgumentException("Student already enrolled");
         }
+
+        System.out.println("Student enrolled successfully");
     }
 
     static void display(String cname) {
@@ -42,30 +45,76 @@ public class CourseMgmtSys {
         }
     }
 
+    static void displayAllCourses() {
+        if (courses.isEmpty()) {
+            throw new IllegalStateException("No courses available");
+        }
+
+        System.out.println("Available Courses:");
+        for (String course : courses.keySet()) {
+            System.out.println(course);
+        }
+    }
+
     public static void main(String[] args) {
         try (Scanner sc = new Scanner(System.in)) {
 
-            System.out.print("Enter course name: ");
-            String courseName = sc.nextLine();
+            while (true) {
+                System.out.println("\n--- Course Management System ---");
+                System.out.println("1. Add Course");
+                System.out.println("2. Enroll Student");
+                System.out.println("3. Display Students of a Course");
+                System.out.println("4. Display All Courses");
+                System.out.println("5. Exit");
+                System.out.print("Enter choice: ");
 
-            addCourse(courseName);
+                try {
+                    int choice = sc.nextInt();
+                    sc.nextLine();
 
-            System.out.print("Enter number of students: ");
-            int n = sc.nextInt();
-            sc.nextLine(); // consume newline
+                    switch (choice) {
+                        case 1:
+                            System.out.print("Enter course name: ");
+                            String courseName = sc.nextLine();
+                            addCourse(courseName);
+                            break;
 
-            for (int i = 1; i <= n; i++) {
-                System.out.print("Enter student " + i + " name: ");
-                String studentName = sc.nextLine();
-                enroll(courseName, studentName);
+                        case 2:
+                            System.out.print("Enter course name: ");
+                            String cname = sc.nextLine();
+
+                            System.out.print("Enter student name: ");
+                            String studentName = sc.nextLine();
+
+                            enroll(cname, studentName);
+                            break;
+
+                        case 3:
+                            System.out.print("Enter course name: ");
+                            String displayCourse = sc.nextLine();
+                            display(displayCourse);
+                            break;
+
+                        case 4:
+                            displayAllCourses();
+                            break;
+
+                        case 5:
+                            System.out.println("Exiting...");
+                            return;
+
+                        default:
+                            throw new IllegalArgumentException("Invalid menu choice");
+                    }
+
+                } catch (InputMismatchException e) {
+                    System.out.println("Error: Please enter numeric input");
+                    sc.nextLine();
+                } catch (Exception e) {
+                    System.out.println("Error: " + e.getMessage());
+                }
             }
 
-            display(courseName);
-
-        } catch (InputMismatchException e) {
-            System.out.println("Error: Please enter valid numeric input");
-        } catch (Exception e) {
-            System.out.println("Error: " + e.getMessage());
         }
     }
 }
